@@ -1,6 +1,6 @@
-from config import OPENAI_API_KEY
+# from config import OPENAI_API_KEY
 
-from openai import OpenAI
+# from openai import OpenAI
 
 # myclient = OpenAI(api_key=OPENAI_API_KEY)
 
