@@ -1,10 +1,47 @@
 from openai import OpenAI
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
+from pyvis.network import Network
 
 from chat_agents import generate_response
 from chat_agents import simulate_group_chat
+from networks import get_simple
+from networks import get_star
 st.set_page_config(layout="wide")
+
+option = st.selectbox(
+    "Select network configuration",
+    ("Complete", "Star", "Ring"),
+)
+
+
+# net.add_node(4, label="Agent 1")
+
+
+
+if option == "Complete":
+    get_simple()
+    HtmlFile = open("simple.html", 'r', encoding='utf-8')
+    source_code = HtmlFile.read()
+    components.html(source_code, height=400)
+    # net.add_edge(1, 2)
+    # net.add_edge(2, 3)
+    # net.add_edge(3, 1)
+elif option == "Star":
+    get_star()
+    HtmlFile = open("star.html", 'r', encoding='utf-8')
+    source_code = HtmlFile.read()
+    components.html(source_code, height=400)
+    # net.add_edge(1, 2)
+    # net.add_edge(2, 3)
+elif option == "Ring":
+    print("start")
+    # net.add_edge(1, 2)
+    # net.add_edge(2, 3)
+
+get_simple()
+
 col1, col2, col3 = st.columns(3)
 
 goal = st.text_area('Goal for agents:', 'Your mission is to help select the best landing site for a 6-member international crew (3 US, 3 Russian) traveling 140 million miles from the Moon to Mars to establish the first human scientific outpost. The crew will conduct all science from a single landing site during the 520-day mission. KEEP YOUR REPLIES SHORT LIKE AN ACTUAL HUMAN IN A GROUP CHAT.', key = "goal")
