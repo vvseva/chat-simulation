@@ -4,3 +4,5 @@ openai==1.40.3
 pandas==2.2.2
 pyvis==0.3.2
 streamlit==1.36.0
+
+pip~=23.2.1
