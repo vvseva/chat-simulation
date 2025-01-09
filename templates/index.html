@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Realtime Push-to-Talk App</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #1a1b26;
+        color: white;
+      }
+
+      #togglePauseButton {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #5ba45b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+
+      #status {
+        margin-top: 20px;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Realtime Push-to-Talk</h1>
+    <button id="togglePauseButton">Start/Pause (Press K)</button>
+    <div id="status">⚪ Ready</div>
+
+    <script>
+      const togglePauseButton = document.getElementById("togglePauseButton");
+      const statusDiv = document.getElementById("status");
+      let isRecording = false;
+      let isPaused = false;
+
+      async function updateStatus() {
+        const response = await fetch("/status");
+        const data = await response.json();
+        statusDiv.textContent = data.status;
+        isRecording = data.is_recording;
+        isPaused = data.is_paused;
+        updateButtonLabel();
+      }
+
+      function updateButtonLabel() {
+        if (isRecording && isPaused) {
+          togglePauseButton.textContent = "Resume (Press K)";
+          togglePauseButton.style.backgroundColor = "#5b80a4";
+        } else if (isRecording) {
+          togglePauseButton.textContent = "Pause (Press K)";
+          togglePauseButton.style.backgroundColor = "#5b80a4";
+        } else {
+          togglePauseButton.textContent = "Start (Press K)";
+          togglePauseButton.style.backgroundColor = "#5ba45b";
+        }
+      }
+
+      async function togglePauseRecording() {
+        const response = await fetch("/toggle_pause_recording", {
+          method: "POST",
+        });
+        const data = await response.json();
+        isRecording = data.is_recording;
+        isPaused = data.is_paused;
+        updateStatus();
+      }
+
+      togglePauseButton.addEventListener("click", togglePauseRecording);
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "k") {
+          togglePauseRecording();
+        }
+      });
+
+      setInterval(updateStatus, 500);
+    </script>
+  </body>
+</html>
